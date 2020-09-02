@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Recipe, Dimension, Ingredient, RecipeIngredient
+from .models import Recipe, Ingredient, RecipeIngredient
 
 
 class RecipeIngredientInline(admin.TabularInline):
@@ -15,13 +15,6 @@ class RecipeAdmin(admin.ModelAdmin):
     inlines = [
         RecipeIngredientInline,
     ]
-
-
-@admin.register(Dimension)
-class DimensionAdmin(admin.ModelAdmin):
-    list_display = ("pk", "title")
-    search_fields = ("title",)
-    list_filter = ("title",)
 
 
 @admin.register(Ingredient)

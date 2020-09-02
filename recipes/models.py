@@ -16,11 +16,14 @@ class Recipe(models.Model):
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="author_recipes", verbose_name="Автор")
     title = models.CharField(max_length=100, verbose_name="Название рецепта")
-    tags = MultiSelectField(choices=TAG_CHOICES, blank=True, null=True, verbose_name="Теги")
-    description = models.TextField(blank=True, null=True, verbose_name="Описание")
-    
+    tags = MultiSelectField(choices=TAG_CHOICES, blank=True,
+                            null=True, verbose_name="Теги")
+    description = models.TextField(
+        blank=True, null=True, verbose_name="Описание")
+
     time = models.IntegerField(verbose_name="Время приготовления")
-    image = models.ImageField(upload_to="recipes/", blank=True, null=True, verbose_name="Изображение")
+    image = models.ImageField(
+        upload_to="recipes/", blank=True, null=True, verbose_name="Изображение")
 
     def __str__(self):
         return self.title
@@ -30,26 +33,15 @@ class Recipe(models.Model):
         verbose_name_plural = u'Рецепты'
 
 
-class Dimension(models.Model):
-    """Единицы измерения для рецептов"""
-    title = models.CharField(max_length=10, verbose_name="Единица измерения")
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name = u'Единицы измерения'
-        verbose_name_plural = u'Единицы измерения'
-
-
 class Ingredient(models.Model):
     """Ингредиенты"""
-    title = models.CharField(max_length=25, verbose_name="Ингредиент")
-    dimension = models.ForeignKey(
-        Dimension, on_delete=models.SET_NULL, null=True, related_name="dimension", verbose_name="Единица измерения")
+    title = models.CharField(
+        max_length=25, verbose_name="Название ингредиента")
+    dimension = models.CharField(
+        max_length=10, verbose_name="Единица измерения")
 
     def __str__(self):
-        return self.title + "/" + self.dimension.title
+        return self.title + "/" + self.dimension
 
     class Meta:
         verbose_name = u'Ингредиенты'
