@@ -20,7 +20,6 @@ class Recipe(models.Model):
                             null=True, verbose_name="Теги")
     description = models.TextField(
         blank=True, null=True, verbose_name="Описание")
-
     time = models.IntegerField(verbose_name="Время приготовления")
     image = models.ImageField(
         upload_to="recipes/", blank=True, null=True, verbose_name="Изображение")
