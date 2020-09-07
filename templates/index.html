@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Рецепты{% endblock %}
+{% block content %}
+
+<main class="main container">
+    <div class="main__header">
+        <h1 class="main__title">Рецепты</h1>
+        <ul class="tags">
+            <li class="tags__item">
+                <a id="breakfast" class="tags__checkbox tags__checkbox_style_orange tags__checkbox_active" href="#"></a>
+                <span class="tags__label">Завтрак</span>
+            </li>
+            <li class="tags__item">
+                <a id="lunch" class="tags__checkbox tags__checkbox_style_green tags__checkbox_active" href="#"></a>
+                <span for="lunch" class="tags__label">Обед</span>
+            </li>
+            <li class="tags__item">
+                <a id="dinner" class="tags__checkbox tags__checkbox_style_purple tags__checkbox_active" href="#"></a>
+                <label for="dinner" class="tags__label">Ужин</label>
+            </li>
+        </ul>
+    </div>
+    <div class="card-list">
+
+        {% for recipe in recipes %}
+        <div class="card" data-id="120">
+            {% load thumbnail %}
+            {% thumbnail recipe.image "364x240" crop="center" upscale=True as im %}
+            <a href="{% url 'recipe' recipe.author.username recipe.id %}" class="link" target="_blank"><img
+                    src="{{ im.url }}" alt="Какой-то текст" class="card__image"></a>
+            {% endthumbnail %}
+            <div class="card__body">
+                <a class="card__title link" href="{% url 'recipe' recipe.author.username recipe.id %}"
+                    target="_blank">{{ recipe.title }}</a>
+                <ul class="card__items">
+                    {% if "lunch" in recipe.tags %}
+                    <li class="card__item"><span class="badge badge_style_green">Обед</span></li>
+                    {% endif %}
+                    {% if "breakfast" in recipe.tags %}
+                    <li class="card__item"><span class="badge badge_style_orange">Завтрак</span></li>
+                    {% endif %}
+                    {% if "dinner" in recipe.tags %}
+                    <li class="card__item"><span class="badge badge_style_purple">Ужин</span></li>
+                    {% endif %}
+                </ul>
+                <div class="card__items card__items_column">
+                    <p class="card__text"><span class="icon-time"></span> {{ recipe.time }} мин.</p>
+                    <p class="card__text"><span class="icon-user"></span> <a
+                            href="{% url 'user' recipe.author.username %}"
+                            style="color: black">{{ recipe.author.get_full_name }}</a></p>
+                </div>
+            </div>
+            <div class="card__footer">
+                <button class="button button_style_light-blue" name="purchpurchases" data-out><span
+                        class="icon-plus button__icon"></span>Добавить в покупки</button>
+                <button class="button button_style_none" name="favorites" data-out><span
+                        class="icon-favorite"></span></button>
+            </div>
+        </div>
+        {% endfor %}
+
+        <nav class="pagination" aria-label="Search results pages">
+            <ul class="pagination__container">
+                <li class="pagination__item"><a class="pagination__link link" href="#"><span
+                            class="icon-left"></span></a>
+                </li>
+                <li class="pagination__item pagination__item_active"><a class="pagination__link link" href="#">1</a>
+                </li>
+                <li class="pagination__item"><a class="pagination__link link" href="#">2</a></li>
+                <li class="pagination__item"><a class="pagination__link link" href="#">3</a></li>
+                <li class="pagination__item"><a class="pagination__link link" href="#">4</a></li>
+                <li class="pagination__item"><a class="pagination__link link" href="#">5</a></li>
+                <li class="pagination__item"><a class="pagination__link link" href="#"><span
+                            class="icon-right"></span></a>
+                </li>
+            </ul>
+        </nav>
+</main>
+
+{% endblock %}
