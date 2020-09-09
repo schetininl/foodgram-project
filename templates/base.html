@@ -22,7 +22,6 @@
                     <li class="nav__item"><a href="#" class="nav__link link">Избранное</a></li>
                     <li class="nav__item"><a href="#" class="nav__link link">Список покупок</a> <span
                             class="badge badge_style_blue nav__badge" id="counter">4</span></li>
-
                 </ul>
                 <ul class="nav__items list">
                     <li class="nav__item"><a href="#" class="nav__link link">Изменить пароль</a></li>
@@ -31,28 +30,34 @@
             </div>
         </nav>
     </header>
+
     {% block content %}
     <!-- Содержимое страницы -->
     {% endblock %}
+
     <footer class="footer">
         <div class="footer__container container">
-            <a href="#" class="footer__brand link">Продуктовый помощник</a>
+            <a href="/" class="footer__brand link">Продуктовый помощник</a>
             <ul class="footer__items">
                 <li class="footer__item"><a href="#" class="footer__link link">Об авторе </a></li>
                 <li class="footer__item"><a href="#" class="footer__link link">Технологии</a></li>
             </ul>
         </div>
     </footer>
+
     <script src="{% static 'js/components/MainCards.js' %}"></script>
 
     <script src="{% static 'js/components/Purchpurachases.js' %}"></script>
     <script src="{% static 'js/components/Favorites.js' %}"></script>
 
+    <script src="{% static 'js/config/config.js' %}"></script>
     <script src="{% static 'js/components/CardList.js' %}"></script>
     <script src="{% static 'js/components/Header.js' %}"></script>
 
     <script src="{% static 'js/api/Api.js' %}"></script>
+    <script src="{% static 'indexNotAuth.js' %}"></script>
     <script src="{% static 'indexAuth.js' %}"></script>
+
 </body>
 
 </html>

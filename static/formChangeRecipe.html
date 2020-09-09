@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Создание рецепта</title>
+    <title>Редактирование рецепта</title>
     <link rel="stylesheet" href="./pages/form.css">
 </head>
 <body class="body">
@@ -29,14 +29,14 @@
 </header>
 <main class="main container">
     <div class="main__header">
-        <h1 class="main__title">Редактирование рецепта рецепта</h1>
+        <h1 class="main__title">Редактирование рецепта</h1>
     </div>
     <div class="form-container">
         <form class="form">
             <div class="form__group">
                 <label for="id_name" class="form__label">Название рецепта</label>
                 <div class="form__field-group">
-                    <input type="email" id="id_name" name="name" class="form__input">
+                    <input type="text" id="id_name" name="name" class="form__input">
                     <span class="form__error"></span>
                 </div>
             </div>
@@ -99,7 +99,7 @@
                 </div>
             </div>
             <div class="form__footer">
-                <button class="button button_style_blue">Создать рецепт</button>
+                <button class="button button_style_blue">Сохранить</button> <a style="margin-left: 2.5em" href="#" class="form__ingredient-link">Удалить</a>
             </div>
         </form>
     </div>
@@ -115,6 +115,7 @@
         </ul>
     </div>
 </footer>
+<script src="./js/config/config.js"></script>
 <script src="./js/components/Header.js"></script>
 <script src="./js/utils/debouncing.js"></script>
 <script src="./js/api/Api.js"></script>

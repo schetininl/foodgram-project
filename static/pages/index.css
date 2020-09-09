@@ -24,6 +24,8 @@
 
 @import "../blocks/header/header.css";
 
+@import "../blocks/main/center-block.css";
+
 @import "../blocks/nav/nav.css";
 @import "../blocks/nav/__container/nav__container.css";
 @import "../blocks/nav/__items/nav__items.css";

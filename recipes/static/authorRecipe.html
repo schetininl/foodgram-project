@@ -46,8 +46,11 @@
             </ul>
 
         </div>
-        <p style="padding: 0 0 2em 0;"><a class="button button_style_light-blue" href="#">Подписаться на автора</a></p>
-        <div class="card-list">
+<!--        <p style="padding: 0 0 2em 0;"><a class="button button_style_light-blue" href="#">Подписаться на автора</a></p>-->
+        <div class="author-subscribe" data-author="323">
+            <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_auto" name="subscribe" data-out>Подписаться на автора</button></p>
+        </div>
+        <div class="card-list" >
         <div class="card" data-id="120">
             <a href="#" class="link" target="_blank"><img src="./images/testCardImg.png" alt="Какой-то текст" class="card__image"></a>
             <div class="card__body">
@@ -169,11 +172,13 @@
 
   <script src="./js/components/Purchpurachases.js"></script>
   <script src="./js/components/Favorites.js"></script>
+  <script src="./js/components/Subscribe.js"></script>
 
-  <script src="./js/components/CardList.js"></script>
+  <script src="./js/config/config.js"></script>
+  <script src="./js/components/AuthorRecipe.js"></script>
   <script src="./js/components/Header.js"></script>
 
   <script src="./js/api/Api.js"></script>
-  <script src="indexAuth.js"></script>
+  <script src="authorRecipe.js"></script>
 </body>
 </html>
