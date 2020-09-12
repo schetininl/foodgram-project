@@ -6,6 +6,11 @@ User = get_user_model()
 
 
 class CreationForm(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super(CreationForm, self).__init__(*args, **kwargs)
+        self.fields['first_name'].required = True
+        self.fields['email'].required = True
     class Meta(UserCreationForm.Meta):
         model = User
         fields = ("first_name", "username", "email")
+        required_fields = ("first_name", "username", "email")
