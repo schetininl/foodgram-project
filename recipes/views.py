@@ -1,28 +1,22 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.core.paginator import Paginator
-from django.db.models import Q
-from functools import reduce
-import operator
+from django.contrib.auth import get_user_model
 import json
 
-from .models import TAG_CHOICES, Recipe
-from users.models import Favorites, Wishlist
+from .models import Recipe
+from users.models import Favorites, Wishlist, Follow
+from .helper import tagCollect
 
 SUCCESS_RESPONSE = '{"success": true}'
+User = get_user_model()
 
 
 def index(request):
-    tags = []
-    for label, _ in TAG_CHOICES:
-        if request.GET.get(label, ""):
-            tags.append(label)
-    if tags:
-        tagsFilter = reduce(operator.or_, (Q(tags__contains=tag)
-                                           for tag in tags))
+    tags, tagsFilter = tagCollect(request)
+    if tagsFilter:
         recipes = Recipe.objects.filter(tagsFilter).order_by("-pk")
     else:
-        tags = [label for label, _ in TAG_CHOICES]
         recipes = Recipe.objects.order_by("-pk")
     paginator = Paginator(recipes, 6)
     page_number = request.GET.get("page")
@@ -41,6 +35,34 @@ def index(request):
         'wishlistCount': wishlistCount
     }
     return render(request, 'index.html', context)
+
+
+def userPage(request, username):
+    user = get_object_or_404(User, username=username)
+    tags, tagsFilter = tagCollect(request)
+    if tagsFilter:
+        recipes = Recipe.objects.filter(tagsFilter).filter(
+            author_id=user.id).order_by("-pk")
+    else:
+        recipes = Recipe.objects.filter(author_id=user.id).order_by("-pk")
+    paginator = Paginator(recipes, 6)
+    page_number = request.GET.get("page")
+    page = paginator.get_page(page_number)
+    favorites = Favorites.objects.filter(
+        user_id=request.user.id).values_list("recipe", flat=True)
+    wishlist = Wishlist.objects.filter(
+        user_id=request.user.id).values_list("recipe", flat=True)
+    wishlistCount = wishlist.count()
+    context = {
+        'page': page,
+        'paginator': paginator,
+        'tags': tags,
+        'favorites': favorites,
+        'wishlist': wishlist,
+        'wishlistCount': wishlistCount,
+        'user': user
+    }
+    return render(request, 'user_page.html', context)
 
 
 def addFavorite(request):
@@ -91,5 +113,32 @@ def removeWishlist(request, recipe_id):
         if wishlistCheck:
             Wishlist.objects.filter(
                 user_id=user.id, recipe_id=recipe_id).delete()
+            return HttpResponse(SUCCESS_RESPONSE)
+    return HttpResponse()
+
+
+def addSubscription(request):
+    if request.method == "POST":
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        recipe_id = body['id']
+        user = request.user
+        subCheck = Follow.objects.filter(
+            subscriber_id=user.id, following_id=recipe_id).exists()
+        if not subCheck:
+            Follow.objects.create(subscriber_id=user.id,
+                                  following_id=recipe_id)
+            return HttpResponse(SUCCESS_RESPONSE)
+    return HttpResponse()
+
+
+def removeSubscription(request, following_id):
+    if request.method == "DELETE":
+        user = request.user
+        subCheck = Follow.objects.filter(
+            subscriber_id=user.id, following_id=following_id).exists()
+        if subCheck:
+            Follow.objects.filter(
+                subscriber_id=user.id, following_id=following_id).delete()
             return HttpResponse(SUCCESS_RESPONSE)
     return HttpResponse()
