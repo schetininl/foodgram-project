@@ -9,6 +9,7 @@
     <title>{% block title %}Рецепты{% endblock %} | Продуктовый помощник</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'pages/index.css' %}">
+    {% csrf_token %}
 </head>
 
 <body class="body">
@@ -16,24 +17,33 @@
         <nav class="nav">
             <div class="nav__container container">
                 <ul class="nav__items list">
-                    <li class="nav__item nav__item_active"><a href="#" class="nav__link link">Рецепты</a></li>
+                    <li class="nav__item nav__item_active"><a href="/" class="nav__link link">Рецепты</a></li>
+                    {% if user.is_authenticated %}
                     <li class="nav__item"><a href="#" class="nav__link link">Мои подписки</a></li>
                     <li class="nav__item"><a href="#" class="nav__link link">Создать рецепт</a></li>
                     <li class="nav__item"><a href="#" class="nav__link link">Избранное</a></li>
+                    {% endif %}
                     <li class="nav__item"><a href="#" class="nav__link link">Список покупок</a> <span
                             class="badge badge_style_blue nav__badge" id="counter">4</span></li>
                 </ul>
                 <ul class="nav__items list">
+                    {% if user.is_authenticated %}
                     <li class="nav__item"><a href="#" class="nav__link link">Изменить пароль</a></li>
                     <li class="nav__item"><a href="#" class="nav__link link">Выход</a></li>
+                    {% else %}
+                    <li class="nav__item"><a href="#" class="nav__link link">Войти</a></li>
+                    <li class="nav__item"><a href="#" class="button button_style_blue">Создать аккаунт</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </nav>
     </header>
 
-    {% block content %}
-    <!-- Содержимое страницы -->
-    {% endblock %}
+    <main class="main container">
+        {% block content %}
+        <!-- Содержимое страницы -->
+        {% endblock %}
+    </main>
 
     <footer class="footer">
         <div class="footer__container container">
@@ -45,18 +55,9 @@
         </div>
     </footer>
 
-    <script src="{% static 'js/components/MainCards.js' %}"></script>
-
-    <script src="{% static 'js/components/Purchpurachases.js' %}"></script>
-    <script src="{% static 'js/components/Favorites.js' %}"></script>
-
-    <script src="{% static 'js/config/config.js' %}"></script>
-    <script src="{% static 'js/components/CardList.js' %}"></script>
-    <script src="{% static 'js/components/Header.js' %}"></script>
-
-    <script src="{% static 'js/api/Api.js' %}"></script>
-    <script src="{% static 'indexNotAuth.js' %}"></script>
-    <script src="{% static 'indexAuth.js' %}"></script>
+    {% block js %}
+    <!-- Скрипты -->
+    {% endblock %}
 
 </body>
 
