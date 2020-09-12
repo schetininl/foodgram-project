@@ -10,7 +10,6 @@
     {% block static %}
     <!-- Static -->
     {% endblock %}
-    {% csrf_token %}
 </head>
 
 <body class="body">
@@ -18,22 +17,29 @@
         <nav class="nav">
             <div class="nav__container container">
                 <ul class="nav__items list">
-                    <li class="nav__item {% if request.path  == '/' %}nav__item_active{% endif %}"><a href="/" class="nav__link link">Рецепты</a></li>
+                    <li class="nav__item {% if request.path  == '/' %}nav__item_active{% endif %}"><a href="/"
+                            class="nav__link link">Рецепты</a></li>
                     {% if user.is_authenticated %}
-                    <li class="nav__item {% if request.path  == '/feed/' %}nav__item_active{% endif %}"><a href="#" class="nav__link link">Мои подписки</a></li>
-                    <li class="nav__item {% if request.path  == '/new/' %}nav__item_active{% endif %}"><a href="#" class="nav__link link">Создать рецепт</a></li>
-                    <li class="nav__item {% if request.path  == '/favorites/' %}nav__item_active{% endif %}"><a href="#" class="nav__link link">Избранное</a></li>
+                    <li class="nav__item {% if request.path  == '/feed/' %}nav__item_active{% endif %}"><a href="#"
+                            class="nav__link link">Мои подписки</a></li>
+                    <li class="nav__item {% if request.path  == '/new/' %}nav__item_active{% endif %}"><a href="#"
+                            class="nav__link link">Создать рецепт</a></li>
+                    <li class="nav__item {% if request.path  == '/favorites/' %}nav__item_active{% endif %}"><a href="#"
+                            class="nav__link link">Избранное</a></li>
+                    <li class="nav__item {% if request.path  == '/wishlist/' %}nav__item_active{% endif %}"><a href="#"
+                            class="nav__link link">Список покупок</a> <span class="badge badge_style_blue nav__badge"
+                            id="counter">{{ wishlistCount }}</span></li>
                     {% endif %}
-                    <li class="nav__item {% if request.path  == '/wishlist/' %}nav__item_active{% endif %}"><a href="#" class="nav__link link">Список покупок</a> <span
-                            class="badge badge_style_blue nav__badge" id="counter">4</span></li>
                 </ul>
                 <ul class="nav__items list">
                     {% if user.is_authenticated %}
-                    <li class="nav__item"><a href="{% url 'password_change' %}" class="nav__link link">Изменить пароль</a></li>
+                    <li class="nav__item"><a href="{% url 'password_change' %}" class="nav__link link">Изменить
+                            пароль</a></li>
                     <li class="nav__item"><a href="{% url 'logout' %}" class="nav__link link">Выход</a></li>
                     {% else %}
                     <li class="nav__item"><a href="{% url 'login' %}" class="nav__link link">Войти</a></li>
-                    <li class="nav__item"><a href="{% url 'signup' %}" class="button button_style_blue">Создать аккаунт</a></li>
+                    <li class="nav__item"><a href="{% url 'signup' %}" class="button button_style_blue">Создать
+                            аккаунт</a></li>
                     {% endif %}
                 </ul>
             </div>
@@ -56,6 +62,9 @@
         </div>
     </footer>
 
+    {% block script %}
+    <!-- Scripts -->
+    {% endblock %}
 </body>
 
 </html>

@@ -4,21 +4,6 @@
 {% load static %}
 {% block static %}
 <link rel="stylesheet" href="{% static 'pages/index.css' %}">
-<script src="{% static 'js/components/MainCards.js' %}"></script>
-
-<script src="{% static 'js/components/purchases.js' %}"></script>
-<script src="{% static 'js/components/Favorites.js' %}"></script>
-
-<script src="{% static 'js/config/config.js' %}"></script>
-<script src="{% static 'js/components/CardList.js' %}"></script>
-<script src="{% static 'js/components/Header.js' %}"></script>
-
-<script src="{% static 'js/api/Api.js' %}"></script>
-{% if user.is_authenticated %}
-<script src="{% static 'indexAuth.js' %}"></script>
-{% else %}
-<script src="{% static 'indexNotAuth.js' %}"></script>
-{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -59,9 +44,10 @@
     </ul>
 </div>
 
+{% csrf_token %}
 <div class="card-list">
     {% for recipe in page %}
-    <div class="card" data-id="120">
+    <div class="card" data-id="{{ recipe.id }}">
         {% load thumbnail %}
         {% thumbnail recipe.image "364x240" crop="center" upscale=True as im %}
         <a href="{% url 'recipe' recipe.author.username recipe.id %}" class="link" target="_blank"><img
@@ -87,12 +73,25 @@
                         style="color: black">{{ recipe.author.get_full_name }}</a></p>
             </div>
         </div>
+        {% if user.is_authenticated %}
         <div class="card__footer">
+            {% if recipe.id in wishlist %}
+            <button class="button button_style_light-blue-outline" name="purchases"><span
+                    class="icon-check button__icon"></span> Рецепт добавлен</button>
+            {% else %}
             <button class="button button_style_light-blue" name="purchases" data-out><span
                     class="icon-plus button__icon"></span>Добавить в покупки</button>
+            {% endif %}
+
+            {% if recipe.id in favorites %}
+            <button class="button button_style_none" name="favorites"><span
+                    class="icon-favorite icon-favorite_active"></span></button>
+            {% else %}
             <button class="button button_style_none" name="favorites" data-out><span
                     class="icon-favorite"></span></button>
+            {% endif %}
         </div>
+        {% endif %}
     </div>
     {% endfor %}
 </div>
@@ -102,4 +101,22 @@
 {% include "paginator.html" with items=page paginator=paginator %}
 {% endif %}
 
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/components/MainCards.js' %}"></script>
+
+<script src="{% static 'js/components/purchases.js' %}"></script>
+<script src="{% static 'js/components/Favorites.js' %}"></script>
+
+<script src="{% static 'js/config/config.js' %}"></script>
+<script src="{% static 'js/components/CardList.js' %}"></script>
+<script src="{% static 'js/components/Header.js' %}"></script>
+
+<script src="{% static 'js/api/Api.js' %}"></script>
+{% if user.is_authenticated %}
+<script src="{% static 'indexAuth.js' %}"></script>
+{% else %}
+<script src="{% static 'indexNotAuth.js' %}"></script>
+{% endif %}
 {% endblock %}

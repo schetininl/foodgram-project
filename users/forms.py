@@ -10,6 +10,7 @@ class CreationForm(UserCreationForm):
         super(CreationForm, self).__init__(*args, **kwargs)
         self.fields['first_name'].required = True
         self.fields['email'].required = True
+
     class Meta(UserCreationForm.Meta):
         model = User
         fields = ("first_name", "username", "email")

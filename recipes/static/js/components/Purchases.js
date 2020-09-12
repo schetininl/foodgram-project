@@ -1,4 +1,4 @@
-class Purchpurachases {
+class Purchases {
     constructor(config, api) {
         this.config = config;
         this.api = api;
