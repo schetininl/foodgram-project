@@ -19,8 +19,8 @@
                 <ul class="nav__items list">
                     <li class="nav__item {% if request.path  == '/' %}nav__item_active{% endif %}"><a href="/"
                             class="nav__link link">Рецепты</a></li>
-                    {% if user.is_authenticated %}
-                    <li class="nav__item {% if request.path  == '/feed/' %}nav__item_active{% endif %}"><a href="#"
+                    {% if request.user.is_authenticated %}
+                    <li class="nav__item {% if request.path  == '/feed/' %}nav__item_active{% endif %}"><a href="{% url 'feed' %}"
                             class="nav__link link">Мои подписки</a></li>
                     <li class="nav__item {% if request.path  == '/new/' %}nav__item_active{% endif %}"><a href="#"
                             class="nav__link link">Создать рецепт</a></li>
@@ -32,7 +32,7 @@
                     {% endif %}
                 </ul>
                 <ul class="nav__items list">
-                    {% if user.is_authenticated %}
+                    {% if request.user.is_authenticated %}
                     <li class="nav__item"><a href="{% url 'password_change' %}" class="nav__link link">Изменить
                             пароль</a></li>
                     <li class="nav__item"><a href="{% url 'logout' %}" class="nav__link link">Выход</a></li>

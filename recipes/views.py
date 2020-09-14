@@ -1,14 +1,11 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.contrib.auth import get_user_model
-import json
 
-from .models import Recipe
+from .models import Recipe, RecipeIngredient
 from users.models import Favorites, Wishlist, Follow
 from .helper import tagCollect
 
-SUCCESS_RESPONSE = '{"success": true}'
 User = get_user_model()
 
 
@@ -25,14 +22,13 @@ def index(request):
         user_id=request.user.id).values_list("recipe", flat=True)
     wishlist = Wishlist.objects.filter(
         user_id=request.user.id).values_list("recipe", flat=True)
-    wishlistCount = wishlist.count()
     context = {
         'page': page,
         'paginator': paginator,
         'tags': tags,
         'favorites': favorites,
         'wishlist': wishlist,
-        'wishlistCount': wishlistCount
+        'wishlistCount': wishlist.count()
     }
     return render(request, 'index.html', context)
 
@@ -52,93 +48,56 @@ def userPage(request, username):
         user_id=request.user.id).values_list("recipe", flat=True)
     wishlist = Wishlist.objects.filter(
         user_id=request.user.id).values_list("recipe", flat=True)
-    wishlistCount = wishlist.count()
+    followCheck = Follow.objects.filter(
+        following=user.id, subscriber=request.user.id).exists()
     context = {
         'page': page,
         'paginator': paginator,
         'tags': tags,
         'favorites': favorites,
         'wishlist': wishlist,
-        'wishlistCount': wishlistCount,
-        'user': user
+        'wishlistCount': wishlist.count(),
+        'user': user,
+        'followCheck': followCheck
     }
     return render(request, 'user_page.html', context)
 
 
-def addFavorite(request):
-    if request.method == "POST":
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-        recipe_id = body['id']
-        user = request.user
-        favoritesCheck = Favorites.objects.filter(
-            user_id=user.id, recipe_id=recipe_id).exists()
-        if not favoritesCheck:
-            Favorites.objects.create(user_id=user.id, recipe_id=recipe_id)
-            return HttpResponse(SUCCESS_RESPONSE)
-    return HttpResponse()
+def recipePage(request, username, recipe_id):
+    user = get_object_or_404(User, username=username)
+    recipe = get_object_or_404(Recipe, id=recipe_id, author_id=user.id)
+    ingredients = RecipeIngredient.objects.filter(recipe_id=recipe_id)
+    favorites = Favorites.objects.filter(
+        user_id=request.user.id).values_list("recipe", flat=True)
+    wishlist = Wishlist.objects.filter(
+        user_id=request.user.id).values_list("recipe", flat=True)
+    followCheck = Follow.objects.filter(
+        following=user.id, subscriber=request.user.id).exists()
+    context = {
+        'recipe': recipe,
+        'ingredients': ingredients,
+        'favorites': favorites,
+        'wishlist': wishlist,
+        'wishlistCount': wishlist.count(),
+        'user': user,
+        'followCheck': followCheck
+    }
+    return render(request, 'recipe_page.html', context)
 
 
-def removeFavorite(request, recipe_id):
-    if request.method == "DELETE":
-        user = request.user
-        favoritesCheck = Favorites.objects.filter(
-            user_id=user.id, recipe_id=recipe_id).exists()
-        if favoritesCheck:
-            Favorites.objects.filter(
-                user_id=user.id, recipe_id=recipe_id).delete()
-            return HttpResponse(SUCCESS_RESPONSE)
-    return HttpResponse()
-
-
-def addWishlist(request):
-    if request.method == "POST":
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-        recipe_id = body['id']
-        user = request.user
-        wishlistCheck = Wishlist.objects.filter(
-            user_id=user.id, recipe_id=recipe_id).exists()
-        if not wishlistCheck:
-            Wishlist.objects.create(user_id=user.id, recipe_id=recipe_id)
-            return HttpResponse(SUCCESS_RESPONSE)
-    return HttpResponse()
-
-
-def removeWishlist(request, recipe_id):
-    if request.method == "DELETE":
-        user = request.user
-        wishlistCheck = Wishlist.objects.filter(
-            user_id=user.id, recipe_id=recipe_id).exists()
-        if wishlistCheck:
-            Wishlist.objects.filter(
-                user_id=user.id, recipe_id=recipe_id).delete()
-            return HttpResponse(SUCCESS_RESPONSE)
-    return HttpResponse()
-
-
-def addSubscription(request):
-    if request.method == "POST":
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-        recipe_id = body['id']
-        user = request.user
-        subCheck = Follow.objects.filter(
-            subscriber_id=user.id, following_id=recipe_id).exists()
-        if not subCheck:
-            Follow.objects.create(subscriber_id=user.id,
-                                  following_id=recipe_id)
-            return HttpResponse(SUCCESS_RESPONSE)
-    return HttpResponse()
-
-
-def removeSubscription(request, following_id):
-    if request.method == "DELETE":
-        user = request.user
-        subCheck = Follow.objects.filter(
-            subscriber_id=user.id, following_id=following_id).exists()
-        if subCheck:
-            Follow.objects.filter(
-                subscriber_id=user.id, following_id=following_id).delete()
-            return HttpResponse(SUCCESS_RESPONSE)
-    return HttpResponse()
+def feed(request):
+    user = get_object_or_404(User, id=request.user.id)
+    following = Follow.objects.filter(subscriber=user).values_list("following", flat=True)
+    authors = User.objects.filter(id__in=following).prefetch_related("recipes")
+    paginator = Paginator(authors, 3)
+    page_number = request.GET.get("page")
+    page = paginator.get_page(page_number)
+    wishlistCount = Wishlist.objects.filter(
+        user_id=request.user.id).count()
+    context = {
+        'authors': authors,
+        'page': page,
+        'paginator': paginator,
+        'wishlistCount': wishlistCount
+    }
+    return render(request, 'feed.html', context)

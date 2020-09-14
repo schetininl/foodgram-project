@@ -1,4 +1,4 @@
-from .models import TAG_CHOICES, Recipe
+from .models import TAG_CHOICES
 from django.db.models import Q
 from functools import reduce
 import operator
@@ -16,4 +16,3 @@ def tagCollect(request):
     else:
         tags = [label for label, _ in TAG_CHOICES]
         return tags, None
-    

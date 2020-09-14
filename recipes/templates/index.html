@@ -9,19 +9,19 @@
 {% block content %}
 <div class="main__header">
     <h1 class="main__title">Рецепты</h1>
-    {% include 'tags.html' %}
+    {% include 'components/tags.html' %}
 </div>
 
 {% csrf_token %}
 <div class="card-list">
     {% for recipe in page %}
-    {% include 'recipe.html' %}
+    {% include 'components/recipe.html' %}
     {% endfor %}
 </div>
 
 
 {% if page.has_other_pages %}
-{% include "paginator.html" with items=page paginator=paginator %}
+{% include "components/paginator.html" with items=page paginator=paginator %}
 {% endif %}
 
 {% endblock %}

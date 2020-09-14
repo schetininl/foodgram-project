@@ -14,7 +14,7 @@ TAG_CHOICES = (('breakfast', 'Завтрак'),
 class Recipe(models.Model):
     """Рецепты"""
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="author_recipes", verbose_name="Автор")
+        User, on_delete=models.CASCADE, related_name="recipes", verbose_name="Автор")
     title = models.CharField(max_length=100, verbose_name="Название рецепта")
     tags = MultiSelectField(choices=TAG_CHOICES, blank=True,
                             null=True, verbose_name="Теги")
@@ -42,6 +42,9 @@ class Ingredient(models.Model):
     def __str__(self):
         return self.title + "/" + self.dimension
 
+    def get_ingredient_name(self):
+        return self.title
+
     class Meta:
         verbose_name = u'Ингредиенты'
         verbose_name_plural = u'Ингредиенты'
@@ -50,7 +53,7 @@ class Ingredient(models.Model):
 class RecipeIngredient(models.Model):
     """Описание ингредиентов и их колличества для рецепта"""
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, related_name="recipe", verbose_name="Рецепт")
+        Recipe, on_delete=models.CASCADE, verbose_name="Рецепт")
     ingredient = models.ForeignKey(
-        Ingredient, on_delete=models.CASCADE, related_name="ingredient", verbose_name="Ингредиент")
+        Ingredient, on_delete=models.CASCADE, verbose_name="Ингредиент")
     amount = models.IntegerField(verbose_name="Количество")
