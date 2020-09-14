@@ -22,11 +22,11 @@
                     {% if request.user.is_authenticated %}
                     <li class="nav__item {% if request.path  == '/feed/' %}nav__item_active{% endif %}"><a href="{% url 'feed' %}"
                             class="nav__link link">Мои подписки</a></li>
-                    <li class="nav__item {% if request.path  == '/new/' %}nav__item_active{% endif %}"><a href="#"
+                    <li class="nav__item {% if request.path  == '/new/' %}nav__item_active{% endif %}"><a href="{% url 'new' %}"
                             class="nav__link link">Создать рецепт</a></li>
-                    <li class="nav__item {% if request.path  == '/favorites/' %}nav__item_active{% endif %}"><a href="#"
+                    <li class="nav__item {% if request.path  == '/favorites/' %}nav__item_active{% endif %}"><a href="{% url 'favorites' %}"
                             class="nav__link link">Избранное</a></li>
-                    <li class="nav__item {% if request.path  == '/wishlist/' %}nav__item_active{% endif %}"><a href="#"
+                    <li class="nav__item {% if request.path  == '/wishlist/' %}nav__item_active{% endif %}"><a href="{% url 'wishlist' %}"
                             class="nav__link link">Список покупок</a> <span class="badge badge_style_blue nav__badge"
                             id="counter">{{ wishlistCount }}</span></li>
                     {% endif %}

@@ -1,8 +1,9 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model
 import json
 
+from recipes.models import Recipe
 from users.models import Favorites, Wishlist, Follow
 
 SUCCESS_RESPONSE = '{"success": true}'
@@ -87,3 +88,10 @@ def removeSubscription(request, following_id):
                 subscriber_id=user.id, following_id=following_id).delete()
             return HttpResponse(SUCCESS_RESPONSE)
     return HttpResponse()
+
+
+def removeRecipe(request, username, recipe_id):
+    if request.user.username == username:
+        Recipe.objects.filter(id=recipe_id).delete()
+        return redirect(f'/{username}/')
+    return redirect(f'/{username}/{recipe_id}/')

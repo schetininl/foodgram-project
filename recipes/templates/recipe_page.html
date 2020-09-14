@@ -46,7 +46,7 @@
                         style="color: black"> {{ recipe.author.get_full_name }}</a></p>
                 </li>
                 {% if request.user == recipe.author%}
-                <li class="single-card__item"> <a style="margin-left: 2.5em" href="#"
+                <li class="single-card__item"> <a style="margin-left: 2.5em" href="{% url 'edit_recipe' recipe.author.username recipe.id %}"
                         class="single-card__text">Редактировать рецепт</a></li>
                 {% endif %}
             </ul>
@@ -87,7 +87,7 @@
         </div>
         {% if request.user == recipe.author%}
         <div class="single-card__section">
-            <p class=" single-card__section-text"><a href="#"
+            <p class=" single-card__section-text"><a href="{% url 'remove_recipe' recipe.author.username recipe.id %}"
                 class="single-card__text" style="color: grey;">Удалить рецепт</a></p>
         </div>
         {% endif %}

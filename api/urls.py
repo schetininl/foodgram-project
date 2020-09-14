@@ -2,6 +2,7 @@ from django.urls import path
 
 from . import views
 
+
 urlpatterns = [
     path("add_favorite",
          views.addFavorite, name="add_favorite"),
@@ -14,5 +15,7 @@ urlpatterns = [
     path("add_subscription",
          views.addSubscription, name="add_subscription"),
     path("remove_subscription/<int:following_id>",
-         views.removeSubscription, name="remove_subscription")
+         views.removeSubscription, name="remove_subscription"),
+    path("<username>/<recipe_id>/remove/",
+         views.removeRecipe, name="remove_recipe")
 ]

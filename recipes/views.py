@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, get_list_or_404, HttpResponse
 from django.core.paginator import Paginator
 from django.contrib.auth import get_user_model
 
@@ -87,7 +87,8 @@ def recipePage(request, username, recipe_id):
 
 def feed(request):
     user = get_object_or_404(User, id=request.user.id)
-    following = Follow.objects.filter(subscriber=user).values_list("following", flat=True)
+    following = Follow.objects.filter(
+        subscriber=user).values_list("following", flat=True)
     authors = User.objects.filter(id__in=following).prefetch_related("recipes")
     paginator = Paginator(authors, 3)
     page_number = request.GET.get("page")
@@ -101,3 +102,74 @@ def feed(request):
         'wishlistCount': wishlistCount
     }
     return render(request, 'feed.html', context)
+
+
+def newRecipe(request):
+    return HttpResponse('In develop')
+
+
+def editRecipe(request, username, recipe_id):
+    return HttpResponse('In develop')
+
+
+def favorites(request):
+    user = request.user
+    favorite = Favorites.objects.filter(
+        user_id=user.id).values_list("recipe", flat=True)
+    tags, tagsFilter = tagCollect(request)
+    if tagsFilter:
+        recipes = Recipe.objects.filter(tagsFilter).filter(
+            id__in=favorite).order_by("-pk")
+    else:
+        recipes = Recipe.objects.filter(
+            id__in=favorite).order_by("-pk")
+    paginator = Paginator(recipes, 6)
+    page_number = request.GET.get("page")
+    page = paginator.get_page(page_number)
+    wishlist = Wishlist.objects.filter(
+        user_id=request.user.id).values_list("recipe", flat=True)
+    context = {
+        'page': page,
+        'paginator': paginator,
+        'tags': tags,
+        'wishlist': wishlist,
+        'wishlistCount': wishlist.count()
+    }
+    return render(request, 'favorites.html', context)
+
+
+def wishlist(request):
+    user = request.user
+    wishlist = Wishlist.objects.filter(
+        user_id=user.id).values_list("recipe", flat=True)
+    recipes = Recipe.objects.filter(
+        id__in=wishlist).order_by("-pk")
+    context = {
+        'recipes': recipes,
+        'wishlistCount': wishlist.count()
+    }
+    return render(request, 'wishlist.html', context)
+
+
+def printWishlist(request):
+    user = request.user
+    wishlistFilter = Wishlist.objects.filter(
+        user_id=user.id).values_list("recipe", flat=True)
+    ingredientFilter = RecipeIngredient.objects.filter(
+        recipe_id__in=wishlistFilter).order_by('ingredient')
+    ingredients = {}
+    for ingredient in ingredientFilter:
+        if ingredient.ingredient in ingredients.keys():
+            ingredients[ingredient.ingredient] += ingredient.amount
+        else:
+            ingredients[ingredient.ingredient] = ingredient.amount
+
+    wishlist = []
+    for k, v in ingredients.items():
+        wishlist.append(f'{k.title} - {v} {k.dimension}'+'\n')
+    wishlist.append('\n\n\n\n')
+    wishlist.append('foodgram')
+
+    response = HttpResponse(wishlist, 'Content-Type: text/plain')
+    response['Content-Disposition'] = 'attachment; filename="wishlist.txt"'
+    return response
