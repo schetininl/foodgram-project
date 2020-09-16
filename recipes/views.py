@@ -1,9 +1,10 @@
-from django.shortcuts import render, get_object_or_404, get_list_or_404, HttpResponse
+from django.shortcuts import render, get_object_or_404, HttpResponse, redirect
 from django.core.paginator import Paginator
 from django.contrib.auth import get_user_model
 
-from .models import Recipe, RecipeIngredient
+from .models import Recipe, Ingredient, RecipeIngredient
 from users.models import Favorites, Wishlist, Follow
+from .forms import RecipeForm
 from .helper import tagCollect
 
 User = get_user_model()
@@ -105,11 +106,74 @@ def feed(request):
 
 
 def newRecipe(request):
-    return HttpResponse('In develop')
+    formTitle = 'Создание рецепта'
+    btn_caption = "Создать рецепт"
+    form = RecipeForm(request.POST or None, files=request.FILES or None)
+    if request.method == "POST" and form.is_valid():
+        ingredients_names = request.POST.getlist('nameIngredient')
+        ingredients_values = request.POST.getlist('valueIngredient')
+        if len(ingredients_names) == len(ingredients_values):
+            count = len(ingredients_names)
+        else:
+            return redirect("new")
+        new_recipe = form.save(commit=False)
+        new_recipe.author = request.user
+        new_recipe.save()
+        for i in range(count):
+            if Ingredient.objects.filter(title=ingredients_names[i]).exists():
+                RecipeIngredient.add_ingredient(
+                    RecipeIngredient, new_recipe.id, ingredients_names[i], ingredients_values[i])
+        return redirect("index")
+    form = RecipeForm()
+    context = {
+        'formTitle': formTitle,
+        'btn_caption': btn_caption,
+        'form': form
+    }
+    return render(request, 'form_recipe.html', context)
 
 
 def editRecipe(request, username, recipe_id):
-    return HttpResponse('In develop')
+    formTitle = 'Редактирование рецепта'
+    btn_caption = "Сохранить"
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    user = get_object_or_404(User, username=username)
+    recipeRedirect = redirect(
+        "recipe", username=user.username, recipe_id=recipe_id)
+    isBreakfast = bool('breakfast' in recipe.tags)
+    islunch = bool('lunch' in recipe.tags)
+    isdinner = bool('dinner' in recipe.tags)
+    ingredients = RecipeIngredient.objects.filter(
+        recipe_id=recipe_id)
+    if request.user != user:
+        return recipeRedirect
+    form = RecipeForm(request.POST or None,
+                      files=request.FILES or None, instance=recipe)
+    if request.method == "POST" and form.is_valid():
+        ingredients_names = request.POST.getlist('nameIngredient')
+        ingredients_values = request.POST.getlist('valueIngredient')
+        if len(ingredients_names) == len(ingredients_values):
+            count = len(ingredients_names)
+        else:
+            return redirect("edit_recipe", username=username, recipe_id=recipe_id)
+        form.save()
+        RecipeIngredient.objects.filter(recipe_id=recipe.id).delete()
+        for i in range(count):
+            if Ingredient.objects.filter(title=ingredients_names[i]).exists():
+                RecipeIngredient.add_ingredient(
+                    RecipeIngredient, recipe.id, ingredients_names[i], ingredients_values[i])
+        return recipeRedirect
+    context = {
+        'formTitle': formTitle,
+        'btn_caption': btn_caption,
+        'form': form,
+        'recipe': recipe,
+        'isBreakfast': isBreakfast,
+        'islunch': islunch,
+        'isdinner': isdinner,
+        'ingredients': ingredients
+    }
+    return render(request, 'form_recipe.html', context)
 
 
 def favorites(request):

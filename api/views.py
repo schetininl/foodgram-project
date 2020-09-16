@@ -1,9 +1,9 @@
-from django.shortcuts import get_object_or_404, redirect
-from django.http import HttpResponse
+from django.shortcuts import redirect
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import get_user_model
 import json
 
-from recipes.models import Recipe
+from recipes.models import Recipe, Ingredient
 from users.models import Favorites, Wishlist, Follow
 
 SUCCESS_RESPONSE = '{"success": true}'
@@ -95,3 +95,12 @@ def removeRecipe(request, username, recipe_id):
         Recipe.objects.filter(id=recipe_id).delete()
         return redirect(f'/{username}/')
     return redirect(f'/{username}/{recipe_id}/')
+
+
+def getIngredients(request):
+    if request.method == "GET":
+        query = request.GET.get("query").lower()
+        ingredients = Ingredient.objects.filter(
+        title__contains=query).values("title", "dimension")
+        return JsonResponse(list(ingredients), safe=False)
+    return HttpResponse()

@@ -85,12 +85,6 @@
             <h3 class="single-card__section-title">Описание:</h3>
             <p class=" single-card__section-text">{{ recipe.description | safe }}</p>
         </div>
-        {% if request.user == recipe.author%}
-        <div class="single-card__section">
-            <p class=" single-card__section-text"><a href="{% url 'remove_recipe' recipe.author.username recipe.id %}"
-                class="single-card__text" style="color: grey;">Удалить рецепт</a></p>
-        </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %}

@@ -17,5 +17,6 @@ urlpatterns = [
     path("remove_subscription/<int:following_id>",
          views.removeSubscription, name="remove_subscription"),
     path("<username>/<recipe_id>/remove/",
-         views.removeRecipe, name="remove_recipe")
+         views.removeRecipe, name="remove_recipe"),
+    path("ingredients/", views.getIngredients, name="get_ingredients")
 ]

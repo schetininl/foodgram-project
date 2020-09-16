@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 
 from multiselectfield import MultiSelectField
 
@@ -20,7 +21,7 @@ class Recipe(models.Model):
                             null=True, verbose_name="Теги")
     description = models.TextField(
         blank=True, null=True, verbose_name="Описание")
-    time = models.IntegerField(verbose_name="Время приготовления")
+    time = models.PositiveIntegerField(verbose_name="Время приготовления")
     image = models.ImageField(
         upload_to="recipes/", blank=True, null=True, verbose_name="Изображение")
 
@@ -56,4 +57,8 @@ class RecipeIngredient(models.Model):
         Recipe, on_delete=models.CASCADE, verbose_name="Рецепт")
     ingredient = models.ForeignKey(
         Ingredient, on_delete=models.CASCADE, verbose_name="Ингредиент")
-    amount = models.IntegerField(verbose_name="Количество")
+    amount = models.PositiveIntegerField(verbose_name="Количество")
+
+    def add_ingredient(self, recipe_id, title, amount):
+        ingredient = get_object_or_404(Ingredient, title=title)
+        return self.objects.create(recipe_id=recipe_id, ingredient=ingredient, amount=amount)
