@@ -5,6 +5,8 @@ register = template.Library()
 
 @register.simple_tag
 def set_tags(request, tags, value):
+    """Устанавливает get параметры в зависимости
+    от выбранных тегов"""
     dict_ = request.GET.copy()
     #Если есть такой параметр в Get-запросе, то удаляем его
     if request.GET.get(value):

@@ -5,6 +5,8 @@ import operator
 
 
 def tagCollect(request):
+    """Собирает теги для фильтрации рецептов
+    на странице"""
     tags = []
     for label, _ in TAG_CHOICES:
         if request.GET.get(label, ""):

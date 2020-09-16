@@ -6,6 +6,7 @@ User = get_user_model()
 
 
 class CreationForm(UserCreationForm):
+    """Форма регистрации"""
     def __init__(self, *args, **kwargs):
         super(CreationForm, self).__init__(*args, **kwargs)
         self.fields['first_name'].required = True

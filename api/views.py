@@ -1,6 +1,7 @@
 from django.shortcuts import redirect
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import get_user_model
+
 import json
 
 from recipes.models import Recipe, Ingredient
@@ -101,6 +102,6 @@ def getIngredients(request):
     if request.method == "GET":
         query = request.GET.get("query").lower()
         ingredients = Ingredient.objects.filter(
-        title__contains=query).values("title", "dimension")
+            title__contains=query).values("title", "dimension")
         return JsonResponse(list(ingredients), safe=False)
     return HttpResponse()

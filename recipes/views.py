@@ -216,6 +216,7 @@ def wishlist(request):
 
 
 def printWishlist(request):
+    """"Вывод списка покупок в текстовый файл"""
     user = request.user
     wishlistFilter = Wishlist.objects.filter(
         user_id=user.id).values_list("recipe", flat=True)

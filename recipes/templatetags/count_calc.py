@@ -5,7 +5,8 @@ register = template.Library()
 
 @register.filter
 def countCalc(field):
-    #result = int(field) - 3
+    """Расчитывает оставшееся колличество
+    рецептов на странице подписок"""
     result = str(int(field) - 3)
     if result[-1:] == '1':
         return result+' рецепт...'
