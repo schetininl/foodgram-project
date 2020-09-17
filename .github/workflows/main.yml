@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   tests:
-    name: Test pep8 conformity and run unit tests
+    name: Test pep8 conformity
     runs-on: ubuntu-latest
 
     steps:
@@ -22,9 +22,6 @@ jobs:
 
     - name: Lint with flake8
       run: flake8 . --exclude venv,migrations,settings
-
-    - name: Test with django test
-      run: python manage.py test
 
   push_to_docker_hub:
     name: Push Docker image to Docker Hub
