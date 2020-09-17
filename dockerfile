@@ -9,8 +9,16 @@ RUN pip install --upgrade pip
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY entrypoint.sh .
+RUN mkdir -p /home/app
 
-COPY . .
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/web
+RUN mkdir $APP_HOME
+RUN mkdir $APP_HOME/static
+RUN mkdir $APP_HOME/media
+WORKDIR $APP_HOME
 
-ENTRYPOINT ["/usr/src/foodgram_project/entrypoint.sh"]
+COPY entrypoint.sh $APP_HOME
+
+COPY . $APP_HOME
+
