@@ -4,7 +4,7 @@ import os
 from .base import *
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&q*=4+71zl5_e*i$+t+)a$8)49s$4^7l9mi60w@wu9bow$!$b8'
+SECRET_KEY = '&dev'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
