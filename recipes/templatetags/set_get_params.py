@@ -8,16 +8,12 @@ def set_tags(request, tags, value):
     """Устанавливает get параметры в зависимости
     от выбранных тегов"""
     dict_ = request.GET.copy()
-    #Если есть такой параметр в Get-запросе, то удаляем его
     if request.GET.get(value):
         del dict_[value]
-    #Если такого параметра нет, но есть в переменной tags
     elif value in tags:
         for tag in tags:
-            #Устанавливаем остальные теги(кроме выбранного)
             if tag != value:
                 dict_[tag] = "tag"
-    #Иначе мы добавляем этот параметр
     else:
         dict_[value] = "tag"
 

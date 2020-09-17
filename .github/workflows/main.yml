@@ -20,7 +20,7 @@ jobs:
         pip install -r requirements.txt
 
     - name: Lint with flake8
-      run: flake8 .
+      run: flake8 . --exclude venv,migrations,settings.py
 
     - name: Test with django test
       run: python manage.py test

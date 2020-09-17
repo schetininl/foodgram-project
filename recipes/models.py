@@ -15,7 +15,8 @@ TAG_CHOICES = (('breakfast', 'Завтрак'),
 class Recipe(models.Model):
     """Рецепты"""
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="recipes", verbose_name="Автор")
+        User, on_delete=models.CASCADE, related_name="recipes",
+        verbose_name="Автор")
     title = models.CharField(max_length=100, verbose_name="Название рецепта")
     tags = MultiSelectField(choices=TAG_CHOICES, blank=True,
                             null=True, verbose_name="Теги")
@@ -23,7 +24,9 @@ class Recipe(models.Model):
         blank=True, null=True, verbose_name="Описание")
     time = models.PositiveIntegerField(verbose_name="Время приготовления")
     image = models.ImageField(
-        upload_to="recipes/", blank=True, null=True, verbose_name="Изображение")
+        upload_to="recipes/",
+        blank=True, null=True,
+        verbose_name="Изображение")
 
     def __str__(self):
         return self.title
@@ -61,4 +64,5 @@ class RecipeIngredient(models.Model):
 
     def add_ingredient(self, recipe_id, title, amount):
         ingredient = get_object_or_404(Ingredient, title=title)
-        return self.objects.create(recipe_id=recipe_id, ingredient=ingredient, amount=amount)
+        return self.objects.create(recipe_id=recipe_id,
+                                   ingredient=ingredient, amount=amount)

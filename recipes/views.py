@@ -122,7 +122,11 @@ def newRecipe(request):
         for i in range(count):
             if Ingredient.objects.filter(title=ingredients_names[i]).exists():
                 RecipeIngredient.add_ingredient(
-                    RecipeIngredient, new_recipe.id, ingredients_names[i], ingredients_values[i])
+                    RecipeIngredient,
+                    new_recipe.id,
+                    ingredients_names[i],
+                    ingredients_values[i]
+                )
         return redirect("index")
     form = RecipeForm()
     context = {
@@ -155,13 +159,18 @@ def editRecipe(request, username, recipe_id):
         if len(ingredients_names) == len(ingredients_values):
             count = len(ingredients_names)
         else:
-            return redirect("edit_recipe", username=username, recipe_id=recipe_id)
+            return redirect("edit_recipe",
+                            username=username, recipe_id=recipe_id)
         form.save()
         RecipeIngredient.objects.filter(recipe_id=recipe.id).delete()
         for i in range(count):
             if Ingredient.objects.filter(title=ingredients_names[i]).exists():
                 RecipeIngredient.add_ingredient(
-                    RecipeIngredient, recipe.id, ingredients_names[i], ingredients_values[i])
+                    RecipeIngredient,
+                    recipe.id,
+                    ingredients_names[i],
+                    ingredients_values[i]
+                )
         return recipeRedirect
     context = {
         'formTitle': formTitle,
