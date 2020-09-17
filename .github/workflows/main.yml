@@ -4,6 +4,7 @@ on: [push]
 
 jobs:
   tests:
+    name: Test pep8 conformity and run unit tests
     runs-on: ubuntu-latest
 
     steps:
