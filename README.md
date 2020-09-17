@@ -6,4 +6,6 @@ foodgram-project
 
 ```
 docker-compose -f ./docker-compose.localhost.yml up
+docker-compose exec web python manage.py migrate --noinput
+docker-compose exec web python manage.py loaddata ingredients.json
 ```

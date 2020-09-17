@@ -39,9 +39,9 @@ class Recipe(models.Model):
 class Ingredient(models.Model):
     """Ингредиенты"""
     title = models.CharField(
-        max_length=25, verbose_name="Название ингредиента")
+        max_length=150, verbose_name="Название ингредиента")
     dimension = models.CharField(
-        max_length=10, verbose_name="Единица измерения")
+        max_length=25, verbose_name="Единица измерения")
 
     def __str__(self):
         return self.title + "/" + self.dimension

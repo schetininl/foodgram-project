@@ -19,8 +19,8 @@ class Migration(migrations.Migration):
             name='Ingredient',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=25, verbose_name='Название ингредиента')),
-                ('dimension', models.CharField(max_length=10, verbose_name='Единица измерения')),
+                ('title', models.CharField(max_length=150, verbose_name='Название ингредиента')),
+                ('dimension', models.CharField(max_length=25, verbose_name='Единица измерения')),
             ],
             options={
                 'verbose_name': 'Ингредиенты',
