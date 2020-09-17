@@ -3,11 +3,13 @@ astroid==2.4.2
 autopep8==1.5.4
 Django==3.1.1
 django-multiselectfield==0.1.12
+flake8==3.8.3
 isort==5.4.2
 lazy-object-proxy==1.4.3
 mccabe==0.6.1
 Pillow==7.2.0
 pycodestyle==2.6.0
+pyflakes==2.2.0
 pylint==2.6.0
 pylint-django==2.3.0
 pylint-plugin-utils==0.6
