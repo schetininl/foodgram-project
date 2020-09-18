@@ -12,19 +12,19 @@
 Запустить docker-compose:
 ```docker-compose up```
 
-При первом запуске для функционирования проекта обязательно выполнить миграции и загрузить список ингредиентов в БД:
-```
-docker-compose exec web python manage.py migrate --noinput
-docker-compose exec web python manage.py loaddata ingredients.json
-```
+При первом запуске для функционирования проекта обязательно выполнить миграции
+```docker-compose exec web python manage.py migrate --noinput```
+
+Чтобы ззагрузить список ингредиентов в БД:
+```docker-compose exec web python manage.py loaddata ingredients.json```
 
 ### local
 
 Запустить docker-compose (файл docker-compose.localhost.yml):
 ```docker-compose -f ./docker-compose.localhost.yml up```
 
-При первом запуске для функционирования проекта обязательно выполнить миграции и загрузить список ингредиентов в БД:
-```
-docker-compose exec web python manage.py migrate --noinput
-docker-compose exec web python manage.py loaddata ingredients.json
-```
+При первом запуске для функционирования проекта обязательно выполнить миграции
+```docker-compose exec web python manage.py migrate --noinput```
+
+Чтобы ззагрузить список ингредиентов в БД:
+```docker-compose exec web python manage.py loaddata ingredients.json```
