@@ -17,5 +17,4 @@ def tag_collect(request):
                                            for tag in tags))
         return tags, tags_filter
     else:
-        tags = [label for label, _ in TAG_CHOICES]
         return tags, None

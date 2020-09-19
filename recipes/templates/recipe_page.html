@@ -6,6 +6,8 @@
 <link rel="stylesheet" href="{% static 'pages/single.css' %}">
 {% endblock %}
 
+{% load check_atribute %}
+
 {% block content %}
 {% csrf_token %}
 <div class="single-card" data-id="{{ recipe.id }}" data-author="{{ recipe.author.id }}">
@@ -17,7 +19,7 @@
         <div class="single-card__header-info">
             <h1 class="single-card__title">{{ recipe.title }}</h1>
             <div class="single-card__favorite">
-                {% if recipe.id in favorites %}
+                {% if recipe|check_favorite:request.user %}
                     <button class="button button_style_none" name="favorites"><span
                             class="icon-favorite icon-favorite_big  icon-favorite_active"></span></button>
                 {% else %}
@@ -41,7 +43,7 @@
                     <p class="single-card__text"><span class="icon-user"></span><a href="{% url 'user' recipe.author.username %}"
                         style="color: black"> {{ recipe.author.get_full_name }}</a></p>
                 </li>
-                {% if request.user == recipe.author%}
+                {% if request.user == recipe.author %}
                     <li class="single-card__item"> <a style="margin-left: 2.5em" href="{% url 'edit_recipe' recipe.author.username recipe.id %}"
                             class="single-card__text">Редактировать рецепт</a></li>
                 {% endif %}
@@ -49,15 +51,15 @@
         </div>
         {% if request.user.is_authenticated %}
         <ul class="single-card__items">
-                {% if recipe.id in wishlist %}
+                {% if recipe|check_wishlist:request.user %}
                     <li class="single-card__item"><button class="button button_style_light-blue-outline" name="purchases"><span
                                 class="icon-check"></span>Рецепт добавлен</button></li>
                 {% else %}
                     <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span
                                 class="icon-plus"></span>Добавить в покупки</button></li>
                 {% endif %}
-                {% if request.user != recipe.author%}
-                    {% if followCheck %}
+                {% if request.user != recipe.author %}
+                    {% if recipe.author|check_subscription:request.user %}
                         <li class="single-card__item"><button class="button button_style_light-blue button_size_subscribe"
                                 name="subscribe">Отписаться от автора</button></li>
                     {% else %}

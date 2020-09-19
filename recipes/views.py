@@ -19,94 +19,63 @@ def index(request):
     paginator = Paginator(recipes, 6)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
-    favorites = Favorites.objects.filter(
-        user_id=request.user.id).values_list("recipe", flat=True)
-    wishlist = Wishlist.objects.filter(
-        user_id=request.user.id).values_list("recipe", flat=True)
     context = {
         'page': page,
         'paginator': paginator,
-        'tags': tags,
-        'favorites': favorites,
-        'wishlist': wishlist,
-        'wishlistCount': wishlist.count()
+        'tags': tags
     }
     return render(request, 'index.html', context)
 
 
 def user_page(request, username):
-    user = get_object_or_404(User, username=username)
+    author = get_object_or_404(User, username=username)
     tags, tagsFilter = tag_collect(request)
     if tagsFilter:
         recipes = Recipe.objects.filter(tagsFilter).filter(
-            author_id=user.id).all()
+            author_id=author.id).all()
     else:
-        recipes = Recipe.objects.filter(author_id=user.id)
+        recipes = Recipe.objects.filter(author_id=author.id)
     paginator = Paginator(recipes, 6)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
-    favorites = Favorites.objects.filter(
-        user_id=request.user.id).values_list("recipe", flat=True)
-    wishlist = Wishlist.objects.filter(
-        user_id=request.user.id).values_list("recipe", flat=True)
-    followCheck = Follow.objects.filter(
-        following=user.id, subscriber=request.user.id).exists()
     context = {
         'page': page,
         'paginator': paginator,
         'tags': tags,
-        'favorites': favorites,
-        'wishlist': wishlist,
-        'wishlistCount': wishlist.count(),
-        'user': user,
-        'followCheck': followCheck
+        'author': author
     }
     return render(request, 'user_page.html', context)
 
 
 def recipe_page(request, username, recipe_id):
-    user = get_object_or_404(User, username=username)
-    recipe = get_object_or_404(Recipe, id=recipe_id, author_id=user.id)
+    author = get_object_or_404(User, username=username)
+    recipe = get_object_or_404(Recipe, id=recipe_id, author_id=author.id)
     ingredients = RecipeIngredient.objects.filter(recipe_id=recipe_id)
-    favorites = Favorites.objects.filter(
-        user_id=request.user.id).values_list("recipe", flat=True)
-    wishlist = Wishlist.objects.filter(
-        user_id=request.user.id).values_list("recipe", flat=True)
-    followCheck = Follow.objects.filter(
-        following=user.id, subscriber=request.user.id).exists()
     context = {
         'recipe': recipe,
         'ingredients': ingredients,
-        'favorites': favorites,
-        'wishlist': wishlist,
-        'wishlistCount': wishlist.count(),
-        'user': user,
-        'followCheck': followCheck
+        'author': author
     }
     return render(request, 'recipe_page.html', context)
 
 
 def feed(request):
     user = request.user
-    following = Follow.objects.filter(
-        subscriber=user).values_list("following", flat=True)
-    authors = User.objects.filter(id__in=following).prefetch_related("recipes")
+    authors = User.objects.filter(following__in=Follow.objects.filter(
+        subscriber=user)).prefetch_related("recipes")
     paginator = Paginator(authors, 3)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
-    wishlistCount = Wishlist.objects.filter(
-        user_id=request.user.id).count()
     context = {
         'authors': authors,
         'page': page,
-        'paginator': paginator,
-        'wishlistCount': wishlistCount
+        'paginator': paginator
     }
     return render(request, 'feed.html', context)
 
 
 def new_recipe(request):
-    formTitle = 'Создание рецепта'
+    form_title = 'Создание рецепта'
     btn_caption = "Создать рецепт"
     form = RecipeForm(request.POST or None, files=request.FILES or None)
     if request.method == "POST" and form.is_valid():
@@ -128,33 +97,28 @@ def new_recipe(request):
             )
         return redirect("index")
     form = RecipeForm()
-    wishlistCount = Wishlist.objects.filter(
-        user_id=request.user.id).count()
     context = {
-        'formTitle': formTitle,
+        'form_title': form_title,
         'btn_caption': btn_caption,
-        'form': form,
-        'wishlistCount': wishlistCount
+        'form': form
     }
     return render(request, 'form_recipe.html', context)
 
 
 def edit_recipe(request, username, recipe_id):
-    formTitle = 'Редактирование рецепта'
+    form_title = 'Редактирование рецепта'
     btn_caption = "Сохранить"
     recipe = get_object_or_404(Recipe, id=recipe_id)
     user = get_object_or_404(User, username=username)
-    recipeRedirect = redirect(
+    recipe_redirect = redirect(
         "recipe", username=user.username, recipe_id=recipe_id)
     is_breakfast = 'breakfast' in recipe.tags
     is_lunch = 'lunch' in recipe.tags
     is_dinner = 'dinner' in recipe.tags
-    wishlistCount = Wishlist.objects.filter(
-        user_id=request.user.id).count()
     ingredients = RecipeIngredient.objects.filter(
         recipe_id=recipe_id)
     if request.user != user:
-        return recipeRedirect
+        return recipe_redirect
     form = RecipeForm(request.POST or None,
                       files=request.FILES or None, instance=recipe)
     if request.method == "POST" and form.is_valid():
@@ -174,55 +138,48 @@ def edit_recipe(request, username, recipe_id):
                 ingredients_names[i],
                 ingredients_values[i]
             )
-        return recipeRedirect
+        return recipe_redirect
     context = {
-        'formTitle': formTitle,
+        'form_title': form_title,
         'btn_caption': btn_caption,
         'form': form,
         'recipe': recipe,
         'is_breakfast': is_breakfast,
         'is_lunch': is_lunch,
         'is_dinner': is_dinner,
-        'ingredients': ingredients,
-        'wishlistCount': wishlistCount
+        'ingredients': ingredients
     }
     return render(request, 'form_recipe.html', context)
 
 
 def favorites(request):
     user = request.user
-    favorite = Favorites.objects.filter(
-        user_id=user.id).values_list("recipe", flat=True)
     tags, tagsFilter = tag_collect(request)
     if tagsFilter:
         recipes = Recipe.objects.filter(tagsFilter).filter(
-            id__in=favorite).all()
+            favorite_recipe__in=Favorites.objects.filter(
+        user_id=user.id)).all()
     else:
         recipes = Recipe.objects.filter(
-            id__in=favorite).all()
+            favorite_recipe__in=Favorites.objects.filter(
+        user_id=user.id)).all()
     paginator = Paginator(recipes, 6)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
-    wishlist = Wishlist.objects.filter(
-        user_id=request.user.id).values_list("recipe", flat=True)
     context = {
         'page': page,
         'paginator': paginator,
-        'tags': tags,
-        'wishlist': wishlist,
-        'wishlistCount': wishlist.count()
+        'tags': tags
     }
     return render(request, 'favorites.html', context)
 
 
 def wishlist(request):
     user = request.user
-    wishlist = Wishlist.objects.filter(
-        user_id=user.id).values_list("recipe", flat=True)
     recipes = Recipe.objects.filter(
-        id__in=wishlist).all()
+        wishlist_recipe__in=Wishlist.objects.filter(
+        user_id=user.id)).all()
     context = {
-        'recipes': recipes,
-        'wishlistCount': wishlist.count()
+        'recipes': recipes
     }
     return render(request, 'wishlist.html', context)

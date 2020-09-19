@@ -31,9 +31,10 @@
                         <li class="nav__item {% if request.path  == favorites %}nav__item_active{% endif %}"><a href="{% url 'favorites' %}"
                                 class="nav__link link">Избранное</a></li>
                         {% url 'wishlist' as wishlist %}
+                        {% load wishlist_count %}
                         <li class="nav__item {% if request.path  == wishlist %}nav__item_active{% endif %}"><a href="{% url 'wishlist' %}"
                                 class="nav__link link">Список покупок</a> <span class="badge badge_style_blue nav__badge"
-                                id="counter">{{ wishlistCount }}</span></li>
+                                id="counter">{{ request.user|wishlist_count }}</span></li>
                     {% endif %}
                 </ul>
                 <ul class="nav__items list">

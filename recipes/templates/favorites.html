@@ -43,7 +43,8 @@
             </div>
             {% if request.user.is_authenticated %}
             <div class="card__footer">
-                {% if recipe.id in wishlist %}
+                {% load check_atribute %}
+                {% if recipe|check_wishlist:request.user %}
                     <button class="button button_style_light-blue-outline" name="purchases"><span
                             class="icon-check button__icon"></span>Рецепт добавлен</button>
                 {% else %}

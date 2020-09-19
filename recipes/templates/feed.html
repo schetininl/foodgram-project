@@ -50,10 +50,10 @@
                                     <p class="recipe__text"><span class="icon-time"></span> {{ recipe.time }} мин.</p>
                                 </div>
                             </li>
-                            <li class="card-user__item">
-                                <a href="{% url 'user' author.username %}" class="card-user__link link">Перейти к автору... </a>
-                            </li>
                         {% endfor %}
+                        <li class="card-user__item">
+                            <a href="{% url 'user' author.username %}" class="card-user__link link">Перейти к автору... </a>
+                        </li>
                     {% endif %}
                 </ul>
             </div>

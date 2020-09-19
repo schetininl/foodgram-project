@@ -29,7 +29,6 @@ class Recipe(models.Model):
         upload_to="recipes/",
         blank=True, null=True,
         verbose_name="Изображение")
-    wishlist = models.OneToOneField()
 
     def __str__(self):
         return self.title

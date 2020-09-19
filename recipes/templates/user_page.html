@@ -8,19 +8,20 @@
 
 {% block content %}
 <div class="main__header">
-    <h1 class="main__title">{{ user.get_full_name }}</h1>
+    <h1 class="main__title">{{ author.get_full_name }}</h1>
     {% include 'components/tags.html' %}
 </div>
 
 {% csrf_token %}
-    {% if request.user != user  %}
-        {% if followCheck %}
-            <div class="author-subscribe" data-author="{{ user.id }}">
+    {% if request.user != author  %}
+        {% load check_atribute %}
+        {% if author|check_subscription:request.user %}
+            <div class="author-subscribe" data-author="{{ author.id }}">
                 <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe"
                         name="subscribe">Отписаться от автора</button></p>
             </div>
             {% else %}
-            <div class="author-subscribe" data-author="{{ user.id }}">
+            <div class="author-subscribe" data-author="{{ author.id }}">
                 <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe" name="subscribe"
                         data-out>Подписаться на автора</button></p>
             </div>
