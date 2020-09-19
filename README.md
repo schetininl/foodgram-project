@@ -19,7 +19,7 @@
 
 ```docker-compose exec web python manage.py migrate```
 
-Чтобы ззагрузить список ингредиентов в БД:
+Чтобы загрузить список ингредиентов в БД:
 
 ```docker-compose exec web python manage.py loaddata ingredients.json```
 

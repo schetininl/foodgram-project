@@ -7,21 +7,21 @@ register = template.Library()
 def set_tags(request, tags, value):
     """Устанавливает get параметры в зависимости
     от выбранных тегов"""
-    dict_ = request.GET.copy()
+    request_object = request.GET.copy()
     if request.GET.get(value):
-        del dict_[value]
+        request_object.pop(value)
     elif value in tags:
         for tag in tags:
             if tag != value:
-                dict_[tag] = "tag"
+                request_object[tag] = "tag"
     else:
-        dict_[value] = "tag"
+        request_object[value] = "tag"
 
-    return dict_.urlencode()
+    return request_object.urlencode()
 
 
 @register.simple_tag
 def set_page(request, value):
-    dict_ = request.GET.copy()
-    dict_["page"] = value
-    return dict_.urlencode()
+    request_object = request.GET.copy()
+    request_object["page"] = value
+    return request_object.urlencode()

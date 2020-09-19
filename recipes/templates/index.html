@@ -15,13 +15,13 @@
 {% csrf_token %}
 <div class="card-list">
     {% for recipe in page %}
-    {% include 'components/recipe.html' %}
+        {% include 'components/recipe.html' %}
     {% endfor %}
 </div>
 
 
 {% if page.has_other_pages %}
-{% include "components/paginator.html" with items=page paginator=paginator %}
+    {% include "components/paginator.html" with items=page paginator=paginator %}
 {% endif %}
 
 {% endblock %}
@@ -38,8 +38,8 @@
 
 <script src="{% static 'js/api/Api.js' %}"></script>
 {% if user.is_authenticated %}
-<script src="{% static 'indexAuth.js' %}"></script>
+    <script src="{% static 'indexAuth.js' %}"></script>
 {% else %}
-<script src="{% static 'indexNotAuth.js' %}"></script>
+    <script src="{% static 'indexNotAuth.js' %}"></script>
 {% endif %}
 {% endblock %}

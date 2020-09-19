@@ -13,27 +13,28 @@
 </div>
 
 {% csrf_token %}
-{% if request.user.is_authenticated and request.user.id != user.id  %}
-{% if followCheck %}
-<div class="author-subscribe" data-author="{{ user.id }}">
-    <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe"
-            name="subscribe">Отписаться от автора</button></p>
-</div>
-{% else %}
-<div class="author-subscribe" data-author="{{ user.id }}">
-    <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe" name="subscribe"
-            data-out>Подписаться на автора</button></p>
-</div>
+    {% if request.user != user  %}
+        {% if followCheck %}
+            <div class="author-subscribe" data-author="{{ user.id }}">
+                <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe"
+                        name="subscribe">Отписаться от автора</button></p>
+            </div>
+            {% else %}
+            <div class="author-subscribe" data-author="{{ user.id }}">
+                <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe" name="subscribe"
+                        data-out>Подписаться на автора</button></p>
+            </div>
+        {% endif %}
 {% endif %}
-{% endif %}
+
 <div class="card-list">
     {% for recipe in page %}
-    {% include 'components/recipe.html' %}
+        {% include 'components/recipe.html' %}
     {% endfor %}
 </div>
 
 {% if page.has_other_pages %}
-{% include "components/paginator.html" with items=page paginator=paginator %}
+    % include "components/paginator.html" with items=page paginator=paginator %}
 {% endif %}
 
 {% endblock %}

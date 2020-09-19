@@ -4,17 +4,18 @@ from functools import reduce
 import operator
 
 
-def tagCollect(request):
-    """Собирает теги для фильтрации рецептов
-    на странице"""
+def tag_collect(request):
+    """Собирает теги для фильтрации рецептов на странице.
+    Логика формирования запроса вынуждает использовать
+    Q и reduce"""
     tags = []
     for label, _ in TAG_CHOICES:
         if request.GET.get(label, ""):
             tags.append(label)
     if tags:
-        tagsFilter = reduce(operator.or_, (Q(tags__contains=tag)
+        tags_filter = reduce(operator.or_, (Q(tags__contains=tag)
                                            for tag in tags))
-        return tags, tagsFilter
+        return tags, tags_filter
     else:
         tags = [label for label, _ in TAG_CHOICES]
         return tags, None

@@ -18,6 +18,8 @@ class Recipe(models.Model):
         User, on_delete=models.CASCADE, related_name="recipes",
         verbose_name="Автор")
     title = models.CharField(max_length=100, verbose_name="Название рецепта")
+    pub_date = models.DateTimeField(
+        auto_now_add=True, verbose_name="Дата публикации")
     tags = MultiSelectField(choices=TAG_CHOICES, blank=True,
                             null=True, verbose_name="Теги")
     description = models.TextField(
@@ -27,13 +29,15 @@ class Recipe(models.Model):
         upload_to="recipes/",
         blank=True, null=True,
         verbose_name="Изображение")
+    wishlist = models.OneToOneField()
 
     def __str__(self):
         return self.title
 
     class Meta:
-        verbose_name = u'Рецепты'
-        verbose_name_plural = u'Рецепты'
+        ordering = ["-pub_date"]
+        verbose_name = 'Рецепты'
+        verbose_name_plural = 'Рецепты'
 
 
 class Ingredient(models.Model):
@@ -44,14 +48,11 @@ class Ingredient(models.Model):
         max_length=25, verbose_name="Единица измерения")
 
     def __str__(self):
-        return self.title + "/" + self.dimension
-
-    def get_ingredient_name(self):
-        return self.title
+        return f"{self.title} / {self.dimension}"
 
     class Meta:
-        verbose_name = u'Ингредиенты'
-        verbose_name_plural = u'Ингредиенты'
+        verbose_name = 'Ингредиенты'
+        verbose_name_plural = 'Ингредиенты'
 
 
 class RecipeIngredient(models.Model):
@@ -64,5 +65,5 @@ class RecipeIngredient(models.Model):
 
     def add_ingredient(self, recipe_id, title, amount):
         ingredient = get_object_or_404(Ingredient, title=title)
-        return self.objects.create(recipe_id=recipe_id,
-                                   ingredient=ingredient, amount=amount)
+        return self.objects.get_or_create(recipe_id=recipe_id,
+                                          ingredient=ingredient, amount=amount)

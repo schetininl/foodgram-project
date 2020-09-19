@@ -15,20 +15,20 @@
 <div class="card-list card-list_column">
     <ul class="shopping-list">
         {% for recipe in recipes %}
-        <li class="shopping-list__item" data-id="{{ recipe.id }}">
-            <div class="recipe recipe_reverse">
-                {% load thumbnail %}
-                {% thumbnail recipe.image "364x240" crop="center" upscale=True as im %}
-                <img src="{{ im.url }}" alt="{{ recipe.title }}" class="recipe__image recipe__image_big">
-                {% endthumbnail %}
-                <h3 class="recipe__title">{{ recipe.title }}</h3>
-                <p class="recipe__text"><span class="icon-time"></span> {{ recipe.time }} мин.</p>
-            </div>
-            <button class="button shopping-list__button link">Удалить</button>
-        </li>
+            <li class="shopping-list__item" data-id="{{ recipe.id }}">
+                <div class="recipe recipe_reverse">
+                    {% load thumbnail %}
+                    {% thumbnail recipe.image "364x240" crop="center" upscale=True as im %}
+                    <img src="{{ im.url }}" alt="{{ recipe.title }}" class="recipe__image recipe__image_big">
+                    {% endthumbnail %}
+                    <h3 class="recipe__title">{{ recipe.title }}</h3>
+                    <p class="recipe__text"><span class="icon-time"></span> {{ recipe.time }} мин.</p>
+                </div>
+                <button class="button shopping-list__button link">Удалить</button>
+            </li>
         {% endfor %}
     </ul>
-    <a class="button button_style_light-blue" href="{% url 'print_wishlist' %}">Скачать список</a>
+    <a class="button button_style_light-blue" href="{% url 'get_wishlist' %}">Скачать список</a>
 </div>
 {% endblock %}
 

@@ -4,14 +4,15 @@ register = template.Library()
 
 
 @register.filter
-def countCalc(field):
+def count_calc(field):
     """Расчитывает оставшееся колличество
-    рецептов на странице подписок"""
+    рецептов на странице подписок.
+    Число приводится к строке, чтобы склонять слово
+    в зависимости от последней цифры в числе"""
     result = str(int(field) - 3)
-    if result[-1:] == '1':
-        return result+' рецепт...'
-    elif result[-1:] in ['2', '3', '4']:
-        return result+' рецепта...'
+    if result[-1] == '1':
+        return f'{result} рецепт...'
+    elif result[-1] in ['2', '3', '4']:
+        return f'{result} рецепта...'
     else:
-        return result+' рецептов...'
-    return str(result)[-1:]
+        return f'{result} рецептов...'
