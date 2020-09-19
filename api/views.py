@@ -104,7 +104,7 @@ def get_wishlist(request):
 
     wishlist = []
     for k, v in ingredients.items():
-        wishlist.append(f'{k.title} - {v} {k.dimension}'+'\n')
+        wishlist.append(f'{k.title} - {v} {k.dimension} \n')
     wishlist.append('\n\n\n\n')
     wishlist.append('foodgram')
 
