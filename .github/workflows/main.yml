@@ -3,11 +3,6 @@ name: build
 on: [push]
 
 jobs:
-  on: [push]
-on: [push]
-
-
-jobs:
   tests:
     name: Test pep8 conformity
     runs-on: ubuntu-latest
