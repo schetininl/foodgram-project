@@ -158,11 +158,11 @@ def favorites(request):
     if tagsFilter:
         recipes = Recipe.objects.filter(tagsFilter).filter(
             favorite_recipe__in=Favorites.objects.filter(
-        user_id=user.id)).all()
+                user_id=user.id)).all()
     else:
         recipes = Recipe.objects.filter(
             favorite_recipe__in=Favorites.objects.filter(
-        user_id=user.id)).all()
+                user_id=user.id)).all()
     paginator = Paginator(recipes, 6)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
@@ -177,8 +177,7 @@ def favorites(request):
 def wishlist(request):
     user = request.user
     recipes = Recipe.objects.filter(
-        wishlist_recipe__in=Wishlist.objects.filter(
-        user_id=user.id)).all()
+        wishlist_recipe__in=Wishlist.objects.filter(user_id=user.id)).all()
     context = {
         'recipes': recipes
     }

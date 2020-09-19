@@ -13,8 +13,8 @@ def tag_collect(request):
         if request.GET.get(label, ""):
             tags.append(label)
     if tags:
-        tags_filter = reduce(operator.or_, (Q(tags__contains=tag)
-                                           for tag in tags))
+        tags_filter = reduce(
+            operator.or_, (Q(tags__contains=tag)for tag in tags))
         return tags, tags_filter
     else:
         return tags, None
