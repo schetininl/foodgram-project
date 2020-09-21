@@ -12,8 +12,7 @@ FAIL_RESPONSE = HttpResponse()
 
 @require_http_methods(["POST"])
 def add_favorite(request):
-    body_unicode = request.body.decode('utf-8')
-    body = json.loads(body_unicode)
+    body = json.loads(request.body)
     recipe_id = int(body['id'])
     user = request.user
     _, created = Favorites.objects.get_or_create(
@@ -31,8 +30,7 @@ def remove_favorite(request, recipe_id):
 
 @require_http_methods(["POST"])
 def add_wishlist(request):
-    body_unicode = request.body.decode('utf-8')
-    body = json.loads(body_unicode)
+    body = json.loads(request.body)
     recipe_id = int(body['id'])
     user = request.user
     _, created = Wishlist.objects.get_or_create(
@@ -50,8 +48,7 @@ def remove_wishlist(request, recipe_id):
 
 @require_http_methods(["POST"])
 def add_subscription(request):
-    body_unicode = request.body.decode('utf-8')
-    body = json.loads(body_unicode)
+    body = json.loads(request.body)
     following_id = int(body['id'])
     user = request.user
     if user.id != following_id:
@@ -77,7 +74,7 @@ def remove_recipe(request, username, recipe_id):
 
 @require_http_methods(["GET"])
 def get_ingredients(request):
-    query = request.GET.get("query").lower()  # с icontains не работает
+    query = request.GET.get("query").lower()
     ingredients = Ingredient.objects.filter(
         title__contains=query).values("title", "dimension")
     return JsonResponse(list(ingredients), safe=False)

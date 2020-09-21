@@ -5,9 +5,7 @@ import operator
 
 
 def tag_collect(request):
-    """Собирает теги для фильтрации рецептов на странице.
-    Логика формирования запроса вынуждает использовать
-    Q и reduce"""
+    """Собирает теги для фильтрации рецептов на странице"""
     tags = []
     for label, _ in TAG_CHOICES:
         if request.GET.get(label, ""):

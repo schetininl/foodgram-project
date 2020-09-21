@@ -11,6 +11,8 @@ def addclass(field, css):
 
 @register.filter
 def class_tag(tag):
+    """Возвращает необходимое поле class
+    для кнопки включения/выключения тега"""
     classes = {
         "breakfast": "badge badge_style_orange",
         "lunch": "badge badge_style_green",
