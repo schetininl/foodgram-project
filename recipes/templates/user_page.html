@@ -13,7 +13,7 @@
 </div>
 
 {% csrf_token %}
-    {% if request.user != author  %}
+    {% if request.user != author and user.is_authenticated  %}
         {% load check_atribute %}
         {% if author|check_subscription:request.user %}
             <div class="author-subscribe" data-author="{{ author.id }}">

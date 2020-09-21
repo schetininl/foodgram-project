@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 
-from users.models import Favorites, Wishlist, Follow
 from .models import Recipe, RecipeIngredient
 from .forms import RecipeForm
 from .helper import tag_collect
@@ -11,9 +11,9 @@ User = get_user_model()
 
 
 def index(request):
-    tags, tagsFilter = tag_collect(request)
-    if tagsFilter:
-        recipes = Recipe.objects.filter(tagsFilter).all()
+    tags, tags_filter = tag_collect(request)
+    if tags_filter:
+        recipes = Recipe.objects.filter(tags_filter).all()
     else:
         recipes = Recipe.objects.all()
     paginator = Paginator(recipes, 6)
@@ -29,9 +29,9 @@ def index(request):
 
 def user_page(request, username):
     author = get_object_or_404(User, username=username)
-    tags, tagsFilter = tag_collect(request)
-    if tagsFilter:
-        recipes = Recipe.objects.filter(tagsFilter).filter(
+    tags, tags_filter = tag_collect(request)
+    if tags_filter:
+        recipes = Recipe.objects.filter(tags_filter).filter(
             author_id=author.id).all()
     else:
         recipes = Recipe.objects.filter(author_id=author.id)
@@ -59,10 +59,11 @@ def recipe_page(request, username, recipe_id):
     return render(request, 'recipe_page.html', context)
 
 
+@login_required
 def feed(request):
     user = request.user
-    authors = User.objects.filter(following__in=Follow.objects.filter(
-        subscriber=user)).prefetch_related("recipes")
+    authors = User.objects.filter(
+        following__subscriber=user).prefetch_related("recipes")
     paginator = Paginator(authors, 3)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
@@ -74,10 +75,12 @@ def feed(request):
     return render(request, 'feed.html', context)
 
 
+@login_required
 def new_recipe(request):
     form_title = 'Создание рецепта'
     btn_caption = "Создать рецепт"
     form = RecipeForm(request.POST or None, files=request.FILES or None)
+
     if request.method == "POST" and form.is_valid():
         ingredients_names = request.POST.getlist('nameIngredient')
         ingredients_values = request.POST.getlist('valueIngredient')
@@ -96,6 +99,7 @@ def new_recipe(request):
                 ingredients_values[i]
             )
         return redirect("index")
+
     form = RecipeForm()
     context = {
         'form_title': form_title,
@@ -105,6 +109,7 @@ def new_recipe(request):
     return render(request, 'form_recipe.html', context)
 
 
+@login_required
 def edit_recipe(request, username, recipe_id):
     form_title = 'Редактирование рецепта'
     btn_caption = "Сохранить"
@@ -117,10 +122,12 @@ def edit_recipe(request, username, recipe_id):
     is_dinner = 'dinner' in recipe.tags
     ingredients = RecipeIngredient.objects.filter(
         recipe_id=recipe_id)
+
     if request.user != user:
         return recipe_redirect
     form = RecipeForm(request.POST or None,
                       files=request.FILES or None, instance=recipe)
+
     if request.method == "POST" and form.is_valid():
         ingredients_names = request.POST.getlist('nameIngredient')
         ingredients_values = request.POST.getlist('valueIngredient')
@@ -139,6 +146,7 @@ def edit_recipe(request, username, recipe_id):
                 ingredients_values[i]
             )
         return recipe_redirect
+
     context = {
         'form_title': form_title,
         'btn_caption': btn_caption,
@@ -152,17 +160,16 @@ def edit_recipe(request, username, recipe_id):
     return render(request, 'form_recipe.html', context)
 
 
+@login_required
 def favorites(request):
     user = request.user
-    tags, tagsFilter = tag_collect(request)
-    if tagsFilter:
-        recipes = Recipe.objects.filter(tagsFilter).filter(
-            favorite_recipe__in=Favorites.objects.filter(
-                user_id=user.id)).all()
+    tags, tags_filter = tag_collect(request)
+    if tags_filter:
+        recipes = Recipe.objects.filter(tags_filter).filter(
+            favorite_recipe__user=user).all()
     else:
         recipes = Recipe.objects.filter(
-            favorite_recipe__in=Favorites.objects.filter(
-                user_id=user.id)).all()
+            favorite_recipe__user=user).all()
     paginator = Paginator(recipes, 6)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
@@ -174,10 +181,11 @@ def favorites(request):
     return render(request, 'favorites.html', context)
 
 
+@login_required
 def wishlist(request):
     user = request.user
     recipes = Recipe.objects.filter(
-        wishlist_recipe__in=Wishlist.objects.filter(user_id=user.id)).all()
+        wishlist_recipe__user=user).all()
     context = {
         'recipes': recipes
     }

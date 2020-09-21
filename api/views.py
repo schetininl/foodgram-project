@@ -6,7 +6,8 @@ from django.views.decorators.http import require_http_methods
 from recipes.models import Recipe, Ingredient, RecipeIngredient
 from users.models import Favorites, Wishlist, Follow
 
-SUCCESS_RESPONSE = JsonResponse({"success": "true"})
+SUCCESS_RESPONSE = JsonResponse({"success": True})
+FAIL_RESPONSE = HttpResponse()
 
 
 @require_http_methods(["POST"])
@@ -19,15 +20,19 @@ def add_favorite(request):
         user_id=user.id, recipe_id=recipe_id)
     if created:
         return SUCCESS_RESPONSE
+    else:
+        return FAIL_RESPONSE
 
 
 @require_http_methods(["DELETE"])
 def remove_favorite(request, recipe_id):
     user = request.user
-    deleted = Favorites.objects.filter(
+    _, deleted = Favorites.objects.filter(
         user_id=user.id, recipe_id=recipe_id).delete()
-    if deleted[0]:
+    if deleted:
         return SUCCESS_RESPONSE
+    else:
+        return FAIL_RESPONSE
 
 
 @require_http_methods(["POST"])
@@ -40,15 +45,19 @@ def add_wishlist(request):
         user_id=user.id, recipe_id=recipe_id)
     if created:
         return SUCCESS_RESPONSE
+    else:
+        return FAIL_RESPONSE
 
 
 @require_http_methods(["DELETE"])
 def remove_wishlist(request, recipe_id):
     user = request.user
-    deleted = Wishlist.objects.filter(
+    _, deleted = Wishlist.objects.filter(
         user_id=user.id, recipe_id=recipe_id).delete()
-    if deleted[0]:
+    if deleted:
         return SUCCESS_RESPONSE
+    else:
+        return FAIL_RESPONSE
 
 
 @require_http_methods(["POST"])
@@ -62,15 +71,19 @@ def add_subscription(request):
             subscriber_id=user.id, following_id=following_id)
     if created:
         return SUCCESS_RESPONSE
+    else:
+        return FAIL_RESPONSE
 
 
 @require_http_methods(["DELETE"])
 def remove_subscription(request, following_id):
     user = request.user
-    deleted = Follow.objects.filter(
+    _, deleted = Follow.objects.filter(
         subscriber_id=user.id, following_id=following_id).delete()
-    if deleted[0]:
+    if deleted:
         return SUCCESS_RESPONSE
+    else:
+        return FAIL_RESPONSE
 
 
 def remove_recipe(request, username, recipe_id):
