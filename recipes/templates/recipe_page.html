@@ -19,12 +19,14 @@
         <div class="single-card__header-info">
             <h1 class="single-card__title">{{ recipe.title }}</h1>
             <div class="single-card__favorite">
-                {% if recipe|check_favorite:request.user %}
-                    <button class="button button_style_none" name="favorites"><span
-                            class="icon-favorite icon-favorite_big  icon-favorite_active"></span></button>
-                {% else %}
-                    <button class="button button_style_none" name="favorites" data-out><span
-                            class="icon-favorite icon-favorite_big"></span></button>
+                {% if request.user.is_authenticated %}
+                    {% if recipe|check_favorite:request.user %}
+                        <button class="button button_style_none" name="favorites"><span
+                                class="icon-favorite icon-favorite_big  icon-favorite_active"></span></button>
+                    {% else %}
+                        <button class="button button_style_none" name="favorites" data-out><span
+                                class="icon-favorite icon-favorite_big"></span></button>
+                    {% endif %}
                 {% endif %}
                 <div class="single-card__favorite-tooltip tooltip">Добавить в избранное</div>
             </div>
